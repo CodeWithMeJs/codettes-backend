@@ -2,15 +2,20 @@ const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-
 const meetingRoutes = require("./routes/meetingRouter");
 const codeRoutes = require("./routes/codeRouter");
+const assignmentRouter = require("./routes/assignmentRouter");
 const { saveAttendance } = require("./controllers/SaveAttendance");
+const { resolvers, typeDefs } = require("./helper/apollo");
 const Attendance = require("./models/Attendance");
+const { ApolloServer } = require("apollo-server-express");
+const path = require("path");
 
 const app = express();
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
+
+const apolloServer = new ApolloServer({ typeDefs, resolvers });
 
 mongoose
   .connect("mongodb://localhost:27017/codettes", {
@@ -55,8 +60,12 @@ io.on("connection", function (socket) {
   });
 });
 
+app.use("/images", express.static(path.join(__dirname, "../images")));
 app.use("/api", meetingRoutes);
 app.use("/api/code", codeRoutes);
+app.use("/api/files", assignmentRouter);
+
+apolloServer.applyMiddleware({ app });
 
 const port = process.env.PORT || 5000;
 server.listen(port, () => {
