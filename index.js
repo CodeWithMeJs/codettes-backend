@@ -18,7 +18,8 @@ const io = require("socket.io")(server);
 const apolloServer = new ApolloServer({ typeDefs, resolvers });
 
 mongoose
-  .connect("mongodb://localhost:27017/codettes", {
+  // .connect("mongodb://localhost:27017/codettes", {
+  .connect(process.env.DB_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
