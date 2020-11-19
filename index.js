@@ -66,6 +66,10 @@ app.use("/api", meetingRoutes);
 app.use("/api/code", codeRoutes);
 app.use("/api/files", assignmentRouter);
 
+app.get("/", (req, res) => {
+  res.send("Hello !!! Welcome To Codettes");
+});
+
 apolloServer.applyMiddleware({ app });
 
 const port = process.env.PORT || 5000;
